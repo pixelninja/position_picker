@@ -1,7 +1,10 @@
 jQuery(function(){
-	var $ = jQuery;
+	var $ = jQuery,
 		maxWidth = $("div.field-positionpicker").width();
 
+	if($("div.field-positionpicker").parent().hasClass('primary')) maxWidth = maxWidth - 11;
+	if($("div.field-positionpicker").parent().hasClass('secondary')) maxWidth = maxWidth - 5;
+	
 	$("div.field-positionpicker select").change(function(){
 		var id = $(this).val();
         var field = $(this).parent().parent();
@@ -15,16 +18,24 @@ jQuery(function(){
 				// Static image
 				var file = $("div.position_picker_vars var.path", field).text();
 
-				pp.html('<img src="' + Symphony.WEBSITE + '/extensions/position_picker/assets/crosshair.gif" class="crosshair" /><img src="' + file + '" class="pic" />');
+				if(file.substr(0, 7) != 'http://' && file.substr(0, 8) != 'https://') {
+					if(file.substr(0, 1) == '/') {
+						file = Symphony.Context.get('root') + file;
+					} else {
+						file = Symphony.Context.get('root') + '/' + file;
+					}
+				}
+
+				pp.html('<img src="' + Symphony.Context.get('root') + '/extensions/position_picker/assets/crosshair.gif" class="crosshair" /><img src="' + file + '" class="pic" />');
 
 				var originalWidth = $("div.position_picker_vars var.width", field).text(),
 					originalHeight = $("div.position_picker_vars var.height", field).text();
 
 			}
 			else {
-				var file = Symphony.WEBSITE + '/workspace' + $("div.position_picker_vars var[rel=" + id + "].path", field).text();
+				var file = Symphony.Context.get('root') + '/workspace' + $("div.position_picker_vars var[rel=" + id + "].path", field).text();
 
-				pp.html('<img src="' + Symphony.WEBSITE + '/extensions/position_picker/assets/crosshair.gif" class="crosshair" /><img src="' + file + '" class="pic" />');
+				pp.html('<img src="' + Symphony.Context.get('root') + '/extensions/position_picker/assets/crosshair.gif" class="crosshair" /><img src="' + file + '" class="pic" />');
 
 				var originalWidth = $("div.position_picker_vars var[rel=" + id + "].width", field).text(),
 					originalHeight = $("div.position_picker_vars var[rel=" + id + "].height", field).text();
